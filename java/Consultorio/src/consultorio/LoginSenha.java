@@ -8,33 +8,42 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class LoginSenha extends javax.swing.JFrame {
+    // Members
     private String login = "";
     private String senha = "";
     private Banco b;
     private Connection con;
     private int role = 0;
     
+    // getters and setters
     public int getRole(){return role;}
     public void setRole(int pRole)
     {
         this.role = pRole;
     }
     
+    // Constructor
     public LoginSenha() {
         initComponents();
+        
+        // Initialize label Components
         lblErro.setVisible(false);
         lblSucesso.setVisible(false);
+        
+        // Get Connection with database
         b = new Banco();
         con = b.getConnection();
     }
     
     /**
-     * 
+     * This function checks login and password, and returns which role
+     * is the user
+     *
      * @param login
      * @param senha
-     * @return 0 = Não achado
-     * @return 1 = Operador Comum
-     * @return 2 = Admin
+     * @return 0 = Not found
+     * @return 1 = Regular user
+     * @return 2 = ADMIN user
      */
     private int Entrar(String login, String senha) throws SQLException
     {
@@ -173,25 +182,29 @@ public class LoginSenha extends javax.swing.JFrame {
     private void btnEntrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEntrarActionPerformed
         this.login = txtLogin.getText();
         this.senha = txtSenha.getText();
-        int isOk = 0;
+        int lRole = 0;
+        
+        // Checks if the login and password are right(2 or 1) or wrong (0)
         try {
-            isOk = this.Entrar(login, senha);
+            lRole = this.Entrar(login, senha);
         } catch (SQLException ex) {
             Logger.getLogger(LoginSenha.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         
-        if (this.senha.isEmpty() || this.txtLogin.getText().isEmpty() || isOk==0)
+        if (this.senha.isEmpty() || this.txtLogin.getText().isEmpty() || lRole==0)
         {
+            // If the password/login is wrong
             lblErro.setVisible(true);
             lblSucesso.setVisible(false);
-            setRole(isOk);
+            setRole(lRole);
         }
-        else if(!this.senha.isEmpty() || !txtLogin.getText().isEmpty() || isOk>0)
+        else if(!this.senha.isEmpty() || !txtLogin.getText().isEmpty() || lRole>0)
         {
+            // If the password/login is right
             lblErro.setVisible(false);
             lblSucesso.setVisible(true);
-            setRole(isOk);
+            setRole(lRole);
             this.setVisible(false);
         }
         
