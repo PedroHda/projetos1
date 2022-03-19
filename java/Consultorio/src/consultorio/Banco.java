@@ -16,7 +16,7 @@ public class Banco
     /*   Local host is using port 3307, it can be changeable, 
      *   depending on the port available in system
      */
-    private String host = "jdbc:mysql://localhost:3307/";
+    private String host = "jdbc:mysql://localhost:3306/";
     private String user = "root";
     private String password = "";
 

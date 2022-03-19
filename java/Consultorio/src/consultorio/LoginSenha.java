@@ -48,7 +48,7 @@ public class LoginSenha extends javax.swing.JFrame {
     private int Entrar(String login, String senha) throws SQLException
     {
         Statement comando = (Statement) this.con.createStatement();
-        String queryString = "select L.LOGIN from consultorio.login L where L.LOGIN = ? and L.SENHA = ?";
+        String queryString = "select L.LOGIN from clinica_psico.usuario L where L.LOGIN = ? and L.SENHA = ?";
         
         PreparedStatement query = (PreparedStatement) con.prepareStatement(queryString);
         query.setString(1, login);

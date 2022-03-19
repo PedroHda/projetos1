@@ -32,27 +32,46 @@ public class mainTela extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        menuUser = new javax.swing.JMenu();
+        itemCadastrar = new javax.swing.JMenuItem();
+        itemBuscar = new javax.swing.JMenuItem();
+        menuPaciente = new javax.swing.JMenu();
+        menuAgenda = new javax.swing.JMenu();
+        menuTimeline = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setText("jLabel1");
+        menuUser.setLabel("Usuario");
+
+        itemCadastrar.setLabel("Cadastrar");
+        menuUser.add(itemCadastrar);
+
+        itemBuscar.setLabel("Buscar");
+        menuUser.add(itemBuscar);
+
+        jMenuBar1.add(menuUser);
+
+        menuPaciente.setLabel("Paciente");
+        jMenuBar1.add(menuPaciente);
+
+        menuAgenda.setLabel("Agendamento");
+        jMenuBar1.add(menuAgenda);
+
+        menuTimeline.setLabel("Timeline");
+        jMenuBar1.add(menuTimeline);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addContainerGap(356, Short.MAX_VALUE))
+            .addGap(0, 792, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addContainerGap(275, Short.MAX_VALUE))
+            .addGap(0, 221, Short.MAX_VALUE)
         );
 
         pack();
@@ -94,6 +113,12 @@ public class mainTela extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JMenuItem itemBuscar;
+    private javax.swing.JMenuItem itemCadastrar;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenu menuAgenda;
+    private javax.swing.JMenu menuPaciente;
+    private javax.swing.JMenu menuTimeline;
+    private javax.swing.JMenu menuUser;
     // End of variables declaration//GEN-END:variables
 }
