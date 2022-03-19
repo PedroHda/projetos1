@@ -1,0 +1,3 @@
+Aqui estarão anotações de coisas a serem ou que podem ser feitas
+
+- build de java pra achar as libs
