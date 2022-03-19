@@ -4,14 +4,14 @@ use Clinica_Psico;
 Create Table Usuario(
 	id INT(2) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 	Nome Varchar(50) not null,
-	Login Varchar(15) not null,
-	senha Varchar(20) not null,
-	CPF int(11) not null,
+	Login Varchar(15) not null UNIQUE ,           
+	senha Varchar(20) not null,           
+	CPF int(11) not null UNIQUE ,                 
 	CEP int(9) not null,
 	Complemento varchar(30),
-	tipo_de_usuario varchar(13) not null,
-	entrada varchar(5) not null,
-	saida varchar(5) not null);
+	tipo_de_usuario varchar(13) not null, -- Criar 'check constraint' que restrinja a apenas duas opções
+	entrada varchar(5) not null,          -- tipo DATE
+	saida varchar(5) not null);           -- tipo DATE
 	
 	
 
@@ -25,9 +25,9 @@ Create Table Paciente(
 	id_paciente INT(3) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 	Nome Varchar(50) not null,
 	Idade INT(3) NOT NULL,
-	Nascimento int(10) NOT NULL,
-	Escolaridade Varchar(20) NOT NULL,
-	Estado_Civil Varchar(20) NOT NULL,
+	Nascimento int(10) NOT NULL,          -- tipo DATE
+	Escolaridade Varchar(20) NOT NULL,    -- Criar 'check constraint' que restrinja a apenas algumas opções
+	Estado_Civil Varchar(20) NOT NULL,    -- Criar 'check constraint' que restrinja a apenas duas opções
 	Filhos INT(1) NOT NULL
 );
 
