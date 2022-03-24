@@ -8,9 +8,9 @@ Create Table Usuario(
 	senha Varchar(20) not null,                 
 	CEP int(9) not null,
 	Complemento varchar(30),
-	tipo_de_usuario varchar(13) not null, # Criar 'check constraint' que restrinja a apenas duas opções
-	entrada varchar(5) not null,          # tipo DATE
-	saida varchar(5) not null             # tipo DATE
+	tipo_de_usuario varchar(13) not null, -- Criar 'check constraint' que restrinja a apenas duas opções
+	entrada varchar(5) not null,          -- tipo DATE
+	saida varchar(5) not null             -- tipo DATE
 );
 	
 Create Table Perguntas(
@@ -24,9 +24,9 @@ Create Table Paciente(
 	Nome Varchar(50) not null,
 	Idade INT(3) NOT NULL,           
 	CPF int(11) not null UNIQUE ,
-	Nascimento int(10) NOT NULL,          # tipo DATE
-	Escolaridade Varchar(20) NOT NULL,    # Criar 'check constraint' que restrinja a apenas algumas opções
-	Estado_Civil Varchar(20) NOT NULL,    # Criar 'check constraint' que restrinja a apenas duas opções
+	Nascimento int(10) NOT NULL,          -- tipo DATE
+	Escolaridade Varchar(20) NOT NULL,    -- Criar 'check constraint' que restrinja a apenas algumas opções
+	Estado_Civil Varchar(20) NOT NULL,    -- Criar 'check constraint' que restrinja a apenas duas opções
 	Filhos INT(1) NOT NULL
 );
 
