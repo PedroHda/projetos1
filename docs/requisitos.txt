@@ -99,5 +99,5 @@
 	- No caso de duas consultas no mesmo dia, o profissional deverá editar a anotação.
 	- A tela de edição/criação é a mesma, e apresenta o campos informando o profissional, o paciente, e a data.
 	- No caso de uma criação, se a data escolhida já existir em outra anotação, a criação não será feita e aparecerá uma mensagem informando o profissional que já existe uma anotação naquela data.
-	
+
 		
