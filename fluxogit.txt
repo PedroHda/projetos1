@@ -1,0 +1,11 @@
+-Iniciar nova feature/tela/algo novo
+	A partir do develop
+	- git checkout -b <nome do branch>]
+-Terminou projeto 
+	Dentro da develop
+	- git merge <nome do branch>
+-Atualizar projeto com algo da develop
+	dentro do branch da develop
+	- git pull
+	dentro do branch em desenvolvimento
+	- git merge develop
