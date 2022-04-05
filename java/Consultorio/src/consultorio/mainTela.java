@@ -21,8 +21,16 @@ public class mainTela extends javax.swing.JFrame {
         initComponents();
         b = new Banco();
         con = b.getConnection();
+        
+        // The net beans wasn't allowing change the initComponents(), so I did that
+        initAgain();
     }
 
+    private void initAgain()
+    {
+        this.setExtendedState(this.MAXIMIZED_BOTH);
+        //setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -34,20 +42,32 @@ public class mainTela extends javax.swing.JFrame {
 
         jMenuBar1 = new javax.swing.JMenuBar();
         menuUser = new javax.swing.JMenu();
-        itemCadastrar = new javax.swing.JMenuItem();
+        itemCadastrarUser = new javax.swing.JMenuItem();
         itemBuscar = new javax.swing.JMenuItem();
         menuPaciente = new javax.swing.JMenu();
         menuAgenda = new javax.swing.JMenu();
         menuTimeline = new javax.swing.JMenu();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Software de Agendamento");
+        setResizable(false);
 
         menuUser.setLabel("Usuario");
 
-        itemCadastrar.setLabel("Cadastrar");
-        menuUser.add(itemCadastrar);
+        itemCadastrarUser.setLabel("Cadastrar");
+        itemCadastrarUser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemCadastrarUserActionPerformed(evt);
+            }
+        });
+        menuUser.add(itemCadastrarUser);
 
         itemBuscar.setLabel("Buscar");
+        itemBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemBuscarActionPerformed(evt);
+            }
+        });
         menuUser.add(itemBuscar);
 
         jMenuBar1.add(menuUser);
@@ -67,15 +87,25 @@ public class mainTela extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 792, Short.MAX_VALUE)
+            .addGap(0, 886, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 221, Short.MAX_VALUE)
+            .addGap(0, 484, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void itemCadastrarUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCadastrarUserActionPerformed
+            TelaUsuario telaUser = new TelaUsuario();
+            this.getContentPane().add(telaUser);
+            telaUser.setVisible(true);
+    }//GEN-LAST:event_itemCadastrarUserActionPerformed
+
+    private void itemBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemBuscarActionPerformed
+
+    }//GEN-LAST:event_itemBuscarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -114,7 +144,7 @@ public class mainTela extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem itemBuscar;
-    private javax.swing.JMenuItem itemCadastrar;
+    private javax.swing.JMenuItem itemCadastrarUser;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenu menuAgenda;
     private javax.swing.JMenu menuPaciente;

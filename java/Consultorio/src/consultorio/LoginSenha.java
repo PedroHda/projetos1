@@ -14,7 +14,8 @@ public class LoginSenha extends javax.swing.JFrame {
     private Banco b;
     private Connection con;
     private int role = 0;
-    
+    public static LoginSenha user;
+
     // getters and setters
     public int getRole(){return role;}
     public void setRole(int pRole)
@@ -25,7 +26,7 @@ public class LoginSenha extends javax.swing.JFrame {
     // Constructor
     public LoginSenha() {
         initComponents();
-        
+
         // Initialize label Components
         lblErro.setVisible(false);
         lblSucesso.setVisible(false);
@@ -48,7 +49,7 @@ public class LoginSenha extends javax.swing.JFrame {
     private int Entrar(String login, String senha) throws SQLException
     {
         Statement comando = (Statement) this.con.createStatement();
-        String queryString = "select L.LOGIN from clinica_psico.usuario L where L.LOGIN = ? and L.SENHA = ?";
+        String queryString = "select L.LOGIN from clinica_psico.usuario L where L.LOGIN = ? and L.SENHA = MD5(?)";
         
         PreparedStatement query = (PreparedStatement) con.prepareStatement(queryString);
         query.setString(1, login);
