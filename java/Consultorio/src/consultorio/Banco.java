@@ -16,7 +16,7 @@ public class Banco
     /*   Local host is using port 3307, it can be changeable, 
      *   depending on the port available in system
      */
-    private String host = "jdbc:mysql://localhost:3306/";
+    private String host = "jdbc:mysql://localhost:3306/clinica_psico";
     private String user = "root";
     private String password = "";
 
@@ -26,8 +26,7 @@ public class Banco
            Class.forName("com.mysql.jdbc.Driver");
            this.con = (Connection) DriverManager.getConnection(host,user,password);
            Statement comando = (Statement) this.con.createStatement();
-           comando.executeQuery("use database consultorio;");
-
+           //comando.executeQuery("use database clinica_psico;");
         }catch(Exception e){ 
             // Not treated
          }

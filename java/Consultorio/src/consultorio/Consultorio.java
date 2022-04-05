@@ -30,12 +30,14 @@ public class Consultorio {
         }
         
         consul.setRole(telaLogin.getRole());
+        // If login retrieved a role successfully
         if (consul.getRole() > 0)
         {
             // Init main screen
             mainTela telaMain = new mainTela();
             telaLogin.dispose();
             telaMain.setVisible(true);
+            
         }
     }
     
