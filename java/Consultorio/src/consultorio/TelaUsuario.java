@@ -121,6 +121,8 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
         txtHoraSaida = new javax.swing.JFormattedTextField();
         txtCep = new javax.swing.JFormattedTextField();
 
+        setClosable(true);
+
         jLabel1.setText("Nome");
 
         jLabel2.setText("Cep");
