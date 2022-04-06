@@ -98,13 +98,15 @@ public class mainTela extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void itemCadastrarUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCadastrarUserActionPerformed
-            TelaUsuario telaUser = new TelaUsuario();
-            this.getContentPane().add(telaUser);
-            telaUser.setVisible(true);
+        TelaUsuario telaUser = new TelaUsuario();
+        this.getContentPane().add(telaUser);
+        telaUser.setVisible(true);
     }//GEN-LAST:event_itemCadastrarUserActionPerformed
 
     private void itemBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemBuscarActionPerformed
-
+        BuscaUsuario telaUserBusca = new BuscaUsuario();
+        this.getContentPane().add(telaUserBusca);
+        telaUserBusca.setVisible(true);
     }//GEN-LAST:event_itemBuscarActionPerformed
 
     /**
