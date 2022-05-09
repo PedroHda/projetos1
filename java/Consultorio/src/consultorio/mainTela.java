@@ -45,6 +45,8 @@ public class mainTela extends javax.swing.JFrame {
         itemCadastrarUser = new javax.swing.JMenuItem();
         itemBuscar = new javax.swing.JMenuItem();
         menuPaciente = new javax.swing.JMenu();
+        itemCadastrarPaciente = new javax.swing.JMenuItem();
+        itemBuscarPaciente = new javax.swing.JMenuItem();
         menuAgenda = new javax.swing.JMenu();
         menuTimeline = new javax.swing.JMenu();
 
@@ -73,6 +75,23 @@ public class mainTela extends javax.swing.JFrame {
         jMenuBar1.add(menuUser);
 
         menuPaciente.setLabel("Paciente");
+
+        itemCadastrarPaciente.setText("Cadastrar");
+        itemCadastrarPaciente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemCadastrarPacienteActionPerformed(evt);
+            }
+        });
+        menuPaciente.add(itemCadastrarPaciente);
+
+        itemBuscarPaciente.setText("Buscar");
+        itemBuscarPaciente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemBuscarPacienteActionPerformed(evt);
+            }
+        });
+        menuPaciente.add(itemBuscarPaciente);
+
         jMenuBar1.add(menuPaciente);
 
         menuAgenda.setLabel("Agendamento");
@@ -108,6 +127,16 @@ public class mainTela extends javax.swing.JFrame {
         this.getContentPane().add(telaUserBusca);
         telaUserBusca.setVisible(true);
     }//GEN-LAST:event_itemBuscarActionPerformed
+
+    private void itemCadastrarPacienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCadastrarPacienteActionPerformed
+        TelaCadastrarPaciente cadastrarPaciente = new TelaCadastrarPaciente();
+        this.getContentPane().add(cadastrarPaciente);
+        cadastrarPaciente.setVisible(true);
+    }//GEN-LAST:event_itemCadastrarPacienteActionPerformed
+
+    private void itemBuscarPacienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemBuscarPacienteActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_itemBuscarPacienteActionPerformed
 
     /**
      * @param args the command line arguments
@@ -146,6 +175,8 @@ public class mainTela extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem itemBuscar;
+    private javax.swing.JMenuItem itemBuscarPaciente;
+    private javax.swing.JMenuItem itemCadastrarPaciente;
     private javax.swing.JMenuItem itemCadastrarUser;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenu menuAgenda;

@@ -30,6 +30,8 @@ public class BuscaUsuario extends javax.swing.JInternalFrame {
     private long cep;
     private String complemento;
     private String userTipo;
+    private String horaEntrada;
+    private String horaSaida;
     /**
      * Creates new form BuscaUsuario
      */
@@ -56,7 +58,7 @@ public class BuscaUsuario extends javax.swing.JInternalFrame {
 
     public void buscar() throws SQLException
     {
-        String queryString = "select u.nome,u.cep,u.complemento,u.tipo_de_usuario"
+        String queryString = "select u.nome,u.cep,u.complemento,u.tipo_de_usuario,u.entrada,u.saida"
                 + " from usuario u where u.LOGIN = ? ";
         
         PreparedStatement query = (PreparedStatement) connect.prepareStatement(queryString);
@@ -71,11 +73,15 @@ public class BuscaUsuario extends javax.swing.JInternalFrame {
             setCep( Long.parseLong(resultado.getString("CEP")) );
             setComplemento(resultado.getString("COMPLEMENTO") );
             setUserTipo(resultado.getString("TIPO_DE_USUARIO"));
-
+            setHoraEntrada(resultado.getString("ENTRADA"));
+            setHoraSaida(resultado.getString("SAIDA"));
+            
             txtNome.setText(this.getNome());
             txtCep.setText( Long.toString(this.getCep()) );
             txtComplemento.setText( this.getComplemento() );
             txtUserTipo.setText(this.getUserTipo());
+            txtHoraEntrada.setText(this.getHoraEntrada());
+            txtHoraSaida.setText(this.getHoraSaida());
         }
         else
         {
@@ -102,6 +108,10 @@ public class BuscaUsuario extends javax.swing.JInternalFrame {
         jLabel5 = new javax.swing.JLabel();
         txtComplemento = new javax.swing.JTextField();
         txtCep = new javax.swing.JFormattedTextField();
+        jLabel6 = new javax.swing.JLabel();
+        txtHoraEntrada = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        txtHoraSaida = new javax.swing.JTextField();
 
         setClosable(true);
 
@@ -140,6 +150,21 @@ public class BuscaUsuario extends javax.swing.JInternalFrame {
         txtCep.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
         txtCep.setFocusable(false);
 
+        jLabel6.setText("Hora de Entrada");
+
+        txtHoraEntrada.setBackground(new java.awt.Color(204, 204, 204));
+        txtHoraEntrada.setFocusable(false);
+
+        jLabel7.setText("Hora de Saída");
+
+        txtHoraSaida.setBackground(new java.awt.Color(204, 204, 204));
+        txtHoraSaida.setFocusable(false);
+        txtHoraSaida.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtHoraSaidaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -166,8 +191,14 @@ public class BuscaUsuario extends javax.swing.JInternalFrame {
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                         .addComponent(jLabel5)
                                         .addComponent(txtUserTipo)
-                                        .addComponent(txtComplemento, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)))))))
-                .addContainerGap(103, Short.MAX_VALUE))
+                                        .addComponent(txtComplemento, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)))
+                                .addGap(22, 22, 22)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(txtHoraEntrada)
+                                    .addComponent(jLabel7)
+                                    .addComponent(txtHoraSaida))))))
+                .addContainerGap(74, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -181,20 +212,24 @@ public class BuscaUsuario extends javax.swing.JInternalFrame {
                 .addGap(57, 57, 57)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jLabel4))
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel6))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtUserTipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtUserTipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtHoraEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jLabel5))
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel7))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtComplemento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtCep, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(64, Short.MAX_VALUE))
+                    .addComponent(txtCep, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtHoraSaida, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(96, Short.MAX_VALUE))
         );
 
         pack();
@@ -212,6 +247,26 @@ public class BuscaUsuario extends javax.swing.JInternalFrame {
     private void txtNomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNomeActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNomeActionPerformed
+
+    private void txtHoraSaidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtHoraSaidaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtHoraSaidaActionPerformed
+
+    public String getHoraEntrada() {
+        return horaEntrada;
+    }
+
+    public void setHoraEntrada(String horaEntrada) {
+        this.horaEntrada = horaEntrada;
+    }
+
+    public String getHoraSaida() {
+        return horaSaida;
+    }
+
+    public void setHoraSaida(String horaSaida) {
+        this.horaSaida = horaSaida;
+    }
 
     public Banco getB() {
         return banco;
@@ -276,8 +331,12 @@ public class BuscaUsuario extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JFormattedTextField txtCep;
     private javax.swing.JTextField txtComplemento;
+    private javax.swing.JTextField txtHoraEntrada;
+    private javax.swing.JTextField txtHoraSaida;
     private javax.swing.JTextField txtLogin;
     private javax.swing.JTextField txtNome;
     private javax.swing.JTextField txtUserTipo;
