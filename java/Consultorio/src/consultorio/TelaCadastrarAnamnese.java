@@ -5,19 +5,25 @@
  */
 package consultorio;
 
+import java.awt.FlowLayout;  
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneLayout;
 
 /**
  *
@@ -35,27 +41,48 @@ public class TelaCadastrarAnamnese extends javax.swing.JFrame {
     JLabel labels[];
     JTextField fields[];
     JScrollPane scroll;
+    JButton button;
+    JPanel jpanButton;
+    private static String[] respostas;
+   
     /**
      * Creates new form TelaCadastrarAnamnese
      */
-    public TelaCadastrarAnamnese() {
-        //initComponents();
-        
+    public TelaCadastrarAnamnese() 
+    {
+        inicializarPainel();
+        inicializar();
+        adicionarItens();
+    }
+    
+    public void inicializarPainel()
+    {
         /*
         * Initializing frame
         */
-        this.setSize(900,550);
+        this.setSize(750,650);
         this.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        this.setLayout(null);
-        //this.setResizable(true);
         
         /*
         * Initializing panel
         */
         jpan = new JPanel();
-        jpan.setBounds(40,0,600,300);
-        jpan.setLayout(null);
-        jpan.setBackground(Color.GRAY);
+        
+        /*
+        * Initializing button
+        */
+        button = new JButton("CONFIRMAR");
+        button.setBounds(625, 50, 100, 20);
+        button.addActionListener(new ActionListener() 
+        {
+            @Override
+            public void actionPerformed(ActionEvent ae) 
+            {
+                setRespostas( popularRespostas() );
+                JOptionPane.showMessageDialog(null, "Respostas Confirmadas"); //To change body of generated methods, choose Tools | Templates.
+                setVisible(false);
+            }
+        });
         
         initDatabase();
         
@@ -68,45 +95,20 @@ public class TelaCadastrarAnamnese extends javax.swing.JFrame {
         labels = new JLabel[(int)getNumPerguntas()];
         fields = new JTextField[(int)getNumPerguntas()];
         
+    }
+    
+    private void inicializar()
+    {
         try {
             System.out.println("Inicializando...");
-            inicializar();
+            inicializarItens();
         } catch (SQLException ex) {
             Logger.getLogger(TelaCadastrarAnamnese.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        /*
-        * Initializing scroll
-        */
-        scroll = new JScrollPane();
-        scroll.setBounds(50,0,700,400);
-        scroll.setViewportView(jpan);
-        //scroll.setLayout(null);
-        scroll.setBackground(Color.yellow);
-        /*
-        * Add Panel
-        */
-        this.add(scroll);
-        
-        /*
-        * Resize Panel
-        */
-        //this.setSize(800, 500);
-        
-        //scroll.validate();
-        //scroll.repaint();
-        //jpan.validate();
-        //jpan.repaint();
-        //this.validate();
-        //this.repaint();
-        
-        System.out.println("Scroll visible:"+scroll.isVisible());
-        System.out.println("Panel visible:"+jpan.isVisible());
     }
-
-    public void inicializar() throws SQLException
+     public void inicializarItens() throws SQLException
     {
-        String queryString =    "select pergunta"
+        String queryString =    "select Pergunta_Anamnese"
                                 +   " from perguntas";
         
         PreparedStatement query = (PreparedStatement) connect.prepareStatement(queryString);
@@ -130,20 +132,24 @@ public class TelaCadastrarAnamnese extends javax.swing.JFrame {
                 /*
                 * get pergunta
                 */
-                String pergunta = resultado.getString("pergunta");
+                String pergunta = resultado.getString("Pergunta_Anamnese");
                 
                 /*
                 * Building JLabel
                 */
-                labels[cnt] = new JLabel(pergunta);   
-                labels[cnt].setBounds(0,y,500,20);
+                labels[cnt] = new JLabel(pergunta);
+                labels[cnt].setBounds(50,y,500,20);
                 y+=20;
                 
                 /*
                 * Building JTextField
                 */
                 fields[cnt] = new JTextField();
-                fields[cnt].setBounds(0, y, 500, 20);
+                fields[cnt].setBounds(50, y, 500, 20);
+                if (this.getRespostas() !=  null)
+                {
+                    fields[cnt].setText(this.getRespostas()[cnt]);
+                }
                 y+=20;
                 
                 /*
@@ -164,6 +170,49 @@ public class TelaCadastrarAnamnese extends javax.swing.JFrame {
         }
         
     }
+    public void adicionarItens()
+    {
+        /*
+        * Set Prefered Size for Panel
+        */
+        jpan.setPreferredSize(new Dimension(300,getPanY()+20));
+        
+        /*
+        * Initializing scroll
+        */
+        
+        scroll = new JScrollPane(jpan);        
+        scroll.setLayout(new ScrollPaneLayout());
+        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        
+        /*
+        * Add button
+        */
+        jpanButton = new JPanel();
+        jpanButton.setLayout(new BorderLayout());
+        jpanButton.add(button, BorderLayout.PAGE_END);
+
+        /*
+        * Add Panel
+        */
+        this.getContentPane().add(scroll,BorderLayout.CENTER);
+        this.getContentPane().add(jpanButton,BorderLayout.PAGE_END);
+        this.validate();
+        this.repaint();
+        
+        System.out.println("Scroll visible:"+scroll.isVisible());
+        System.out.println("Panel visible:"+jpan.isVisible());
+    }
+    public String[] popularRespostas()
+    {
+        int lNumPerg = (int) this.getNumPerguntas();
+        respostas = new String[lNumPerg];
+        for (int i = 0; i < lNumPerg; ++i)
+        {
+            respostas[i] = fields[i].getText();
+        }
+        return respostas;
+    }
     /*
     * This method initializes database
     */
@@ -172,9 +221,8 @@ public class TelaCadastrarAnamnese extends javax.swing.JFrame {
         // Get Connection with database
         banco = new Banco();
         connect = banco.getConnection();
-
     }
-    
+
     /*
     * This method returns the number of questions
     */
@@ -183,7 +231,7 @@ public class TelaCadastrarAnamnese extends javax.swing.JFrame {
         /*
         * Query de select count
         */
-        String queryString = "select count(pergunta_id) as numPerguntas"
+        String queryString = "select count(id_pergunta) as numPerguntas"
                 + " from perguntas";
         
         PreparedStatement query = (PreparedStatement) connect.prepareStatement(queryString);
@@ -206,6 +254,7 @@ public class TelaCadastrarAnamnese extends javax.swing.JFrame {
      * WARNING: Do NOT modify this code. The content of this method is always
      * regenerated by the Form Editor.
      */
+    /*
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -225,7 +274,7 @@ public class TelaCadastrarAnamnese extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+*/
     /**
      * @param args the command line arguments
      */
@@ -275,6 +324,14 @@ public class TelaCadastrarAnamnese extends javax.swing.JFrame {
 
     public void setPanY(int panY) {
         this.panY = panY;
+    }
+
+    public String[] getRespostas() {
+        return respostas;
+    }
+
+    public void setRespostas(String[] respostas) {
+        this.respostas = respostas;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -7,19 +7,27 @@ package consultorio;
 
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
 
 /**
  *
  * @author Pedro
+ * - After Close TelaCadastrarPaciente, respostas não podem mais aparecer
+ * - Finalizar Insert da tela
  */
 public class TelaCadastrarPaciente extends javax.swing.JInternalFrame {
 
     private Banco banco;
     private Connection connect;
+    private WindowAdapter adapter;
     
     private String nome;
     private long cpf;
@@ -28,12 +36,21 @@ public class TelaCadastrarPaciente extends javax.swing.JInternalFrame {
     private String estadoCivil;
     private String loginProf;
     private String escolaridade;
-    
+    private TelaCadastrarAnamnese telaCadAnamn;
     /**
      * Creates new form TelaCadastrarPaciente
      */
     public TelaCadastrarPaciente() 
     {
+        this.addInternalFrameListener( new InternalFrameAdapter()
+        {
+            public void internalFrameClosing(InternalFrameEvent e) 
+            {
+                System.out.println("Listener After Closing Tela Cadastrar Anamnese");
+                //telaCadAnamn = null;
+                //telaCadAnamn.dispose();
+            }
+        } );
         initComponents();
         this.initDatabase();
     }
@@ -65,32 +82,69 @@ public class TelaCadastrarPaciente extends javax.swing.JInternalFrame {
     /*
     * This method populates Usuario table
     */
-    public void cadastrar() throws SQLException
+    public int cadastrar() throws SQLException
     {
-        String queryString = "insert into paciente values"+
+        String queryStringPaciente = "insert into paciente values"+
                 "("+
                     "(select max(p.id_paciente)+1 from paciente p)," +
                     "?,"            + // Nome
                     "?,"            + // CPF
-                    "?,"       + // Nascimento
+                    "?,"            + // Nascimento
                     "?,"            + // Escolaridade
                     "?,"            + // Estado Civil
                     "?,"            + // Filhos
                     "?"             + // Login do Médico
                 ")";
         
-        PreparedStatement query = (PreparedStatement) connect.prepareStatement(queryString);
-        query.setString(1, this.getNome());
-        query.setLong(2, this.getCpf());
-        query.setString(3, this.getNascimento());
-        query.setString(4, this.getEscolaridade());
-        query.setString(5, this.getEstadoCivil());
-        query.setLong(6, this.getFilhos());
-        query.setString(7, this.getLoginProf());
+        String queryStringProfPac = "insert into Profissional_paciente" +
+                "("+
+                    "(select max(p.id_paciente)+1 from Profissional_paciente pp)," +
+                    "?,"            + // id Usuario
+                    "?,"            + // id Paciente
+                ")";
+
+        /*
+        * Prepare Profissional_Paciente query
+        */
+        PreparedStatement queryPaciente = (PreparedStatement) connect.prepareStatement(queryStringPaciente);
+        queryPaciente.setString(1, this.getNome());
+        queryPaciente.setLong(2, this.getCpf());
+        queryPaciente.setString(3, this.getNascimento());
+        queryPaciente.setString(4, this.getEscolaridade());
+        queryPaciente.setString(5, this.getEstadoCivil());
+        queryPaciente.setLong(6, this.getFilhos());
+        queryPaciente.setString(7, this.getLoginProf());
         
-        System.out.println(query);
-        query.executeUpdate();
+        /*
+        * Prepare Profissional_Paciente query
+        */
+        long id_prof = -1;
+        String queryStringSearch = "select id_usuario"
+                + " from usuario where login = ? and tipo_de_usuario='Profissional' ";
         
+        PreparedStatement querySearch = (PreparedStatement) connect.prepareStatement(queryStringSearch);
+        querySearch.setString(1, this.getLoginProf());
+        
+        System.out.println(querySearch);
+        ResultSet resultado = querySearch.executeQuery();
+
+        
+        if (resultado.next() == true)
+        {
+            id_prof = Long.parseLong(resultado.getString("ID_USUARIO"));
+            PreparedStatement queryProfPac = (PreparedStatement) connect.prepareStatement(queryStringProfPac);
+            queryProfPac.setLong(1, id_prof);
+        
+            System.out.println(queryPaciente);
+            System.out.println(queryProfPac);
+            queryPaciente.executeUpdate();
+            queryProfPac.executeUpdate();
+            return 0;
+        }
+        else
+        {
+            return -1;
+        }
     }
     
     /**
@@ -246,7 +300,7 @@ public class TelaCadastrarPaciente extends javax.swing.JInternalFrame {
         int ret = 0;
         this.popularMembros();
         try {
-            this.cadastrar();
+            ret = this.cadastrar();
         } catch (SQLException ex) {
             Logger.getLogger(TelaCadastrarPaciente.class.getName()).log(Level.SEVERE, null, ex);
             ret = 1;
@@ -254,13 +308,30 @@ public class TelaCadastrarPaciente extends javax.swing.JInternalFrame {
         if (ret == 0 )
         {
             JOptionPane.showMessageDialog(null, "Paciente Inserido");
+            telaCadAnamn.dispose();
         }
+        else if (ret == 1)
+        {
+            JOptionPane.showMessageDialog(null, "Problema ao inserir Paciente");
+        }
+        else if(ret == -1)
+        {
+            JOptionPane.showMessageDialog(null, "Não há um Profissional com esse login");
+        }
+        
     }//GEN-LAST:event_btnCadastrarActionPerformed
 
     private void btnCadasAnamneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadasAnamneActionPerformed
-        //TelaCadastrarAnamnese cadastrarAnamnese = new TelaCadastrarAnamnese();
-        TelaCadastrarAnamnese cadasAnamn = new TelaCadastrarAnamnese();
-        cadasAnamn.setVisible(true);
+        if (telaCadAnamn == null)
+        {
+            telaCadAnamn = new TelaCadastrarAnamnese();
+            telaCadAnamn.setVisible(true);
+        }
+        else
+        {
+            telaCadAnamn.setVisible(true);
+        }
+        
     }//GEN-LAST:event_btnCadasAnamneActionPerformed
 
     public String getNome() {
