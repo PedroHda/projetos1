@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import static javax.swing.UIManager.getInt;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 
@@ -21,7 +22,7 @@ import javax.swing.event.InternalFrameEvent;
  *
  * @author Pedro
  * - After Close TelaCadastrarPaciente, respostas não podem mais aparecer
- * - Finalizar Insert da tela
+ * - Finalizar Insert da tela, só falta colocar as respostas
  */
 public class TelaCadastrarPaciente extends javax.swing.JInternalFrame {
 
@@ -70,6 +71,7 @@ public class TelaCadastrarPaciente extends javax.swing.JInternalFrame {
     */
     public void popularMembros()
     {
+        
         setNome(txtNome.getText());
         setLoginProf(txtLogin.getText());
         setNascimento(txtNascimento.getText());
@@ -84,25 +86,52 @@ public class TelaCadastrarPaciente extends javax.swing.JInternalFrame {
     */
     public int cadastrar() throws SQLException
     {
-        String queryStringPaciente = "insert into paciente values"+
-                "("+
-                    "(select max(p.id_paciente)+1 from paciente p)," +
-                    "?,"            + // Nome
-                    "?,"            + // CPF
-                    "?,"            + // Nascimento
-                    "?,"            + // Escolaridade
-                    "?,"            + // Estado Civil
-                    "?,"            + // Filhos
-                    "?"             + // Login do Médico
+        long id_prof = -1;
+        long id_paciente = 0;
+        long id_profPac = 0;
+        
+        String queryStringPaciente = " "+
+                "insert into paciente values(\n"+
+                    "NOME,\n" +
+                    "CPF,\n" +
+                    "Nascimento, \n" +
+                    "Escolaridade, \n" +
+                    "Estado_Civil, \n" +
+                    "Filhos )\n"+
+                "(\n"+
+                    "?,\n"            + // Nome
+                    "?,\n"            + // CPF
+                    "?,\n"            + // Nascimento
+                    "?,\n"            + // Escolaridade
+                    "?,\n"            + // Estado Civil
+                    "?,\n"            + // Filhos
                 ")";
         
-        String queryStringProfPac = "insert into Profissional_paciente" +
-                "("+
-                    "(select max(p.id_paciente)+1 from Profissional_paciente pp)," +
-                    "?,"            + // id Usuario
-                    "?,"            + // id Paciente
-                ")";
-
+        String queryStringProfPac = " "+
+                "insert into Profissional_paciente values\n" +
+                "(\n"+
+                    "?,\n"            + // id Usuario
+                    "?,\n"            + // id Paciente
+                ")";        
+        
+        String queryStringAnamn = " "+
+                "insert into Anamnese values\n";        
+        int index = 1;
+        for (int i = 0; i < telaCadAnamn.getNumPerguntas(); ++i)
+        {
+            queryStringAnamn += 
+                    "(\n"+
+                        "?,\n"      + // Id Prof Paciente
+                        "?,\n"      + // Pergunta
+                        "?\n"       + // Resposta
+                    ")\n";
+            
+            if (i < telaCadAnamn.getNumPerguntas() - 1)
+            {
+                queryStringAnamn +=",\n";
+            }
+        }
+        
         /*
         * Prepare Profissional_Paciente query
         */
@@ -118,33 +147,101 @@ public class TelaCadastrarPaciente extends javax.swing.JInternalFrame {
         /*
         * Prepare Profissional_Paciente query
         */
-        long id_prof = -1;
-        String queryStringSearch = "select id_usuario"
-                + " from usuario where login = ? and tipo_de_usuario='Profissional' ";
+        String queryStringSearch =  "select\n"+
+                                        "u.id_usuario\n"+
+                                    "from \n"+
+                                        "usuario u \n"+
+                                    "where\n"+
+                                        "u.Login = ? \n"+
+                                        "AND u.tipo_de_usuario = 'Profissional'\n"
+                                    + " ";
+        
         
         PreparedStatement querySearch = (PreparedStatement) connect.prepareStatement(queryStringSearch);
         querySearch.setString(1, this.getLoginProf());
         
         System.out.println(querySearch);
-        ResultSet resultado = querySearch.executeQuery();
+        ResultSet resultado= querySearch.executeQuery();
+        if(resultado.next())
+        {
+            id_prof = Long.parseLong(resultado.getString("id_usuario"));
+        }
+        
+        /*
+        * Execute query Paciente
+        */
+        if(queryPaciente.executeUpdate() <= 0)
+        {
+            return -2;
+        }
+        ResultSet genPacienteKeys = queryPaciente.getGeneratedKeys();
+        if(genPacienteKeys.next())
+        {
+            id_paciente = getInt(1);
+        }
+        
+        
+        /*
+        * Prepare Query Profissional Paciente
+        */        
+        PreparedStatement queryProfPac = (PreparedStatement) connect.prepareStatement(queryStringProfPac);
+        queryProfPac.setLong(1, id_prof);
+        queryProfPac.setLong(2, id_paciente);
 
-        
-        if (resultado.next() == true)
+        /*
+        * Execute query Profissional_Paciente
+        */
+        if(queryProfPac.executeUpdate() <= 0)
         {
-            id_prof = Long.parseLong(resultado.getString("ID_USUARIO"));
-            PreparedStatement queryProfPac = (PreparedStatement) connect.prepareStatement(queryStringProfPac);
-            queryProfPac.setLong(1, id_prof);
+            return -2;
+        }
+        ResultSet genProfPacKeys = queryProfPac.getGeneratedKeys();
         
-            System.out.println(queryPaciente);
-            System.out.println(queryProfPac);
-            queryPaciente.executeUpdate();
-            queryProfPac.executeUpdate();
-            return 0;
-        }
-        else
+        if(genProfPacKeys.next())
         {
-            return -1;
+            id_profPac = Long.parseLong(resultado.getString("id_profissional_paciente"));
         }
+
+        /*    queryProfPac.setLong(1, id_prof);
+            queryProfPac.setLong(2, id_paciente);            
+            
+            if (queryProfPac.executeUpdate() <= 0)
+            {
+                return -2;
+            }
+                    /*
+            * Prepare Anamnese query
+            */
+
+        /*
+        * Prepare query Anamnese
+        */
+        PreparedStatement queryAnamn = (PreparedStatement) connect.prepareStatement(queryStringAnamn);
+
+        for (int j = 0; j < telaCadAnamn.getNumPerguntas(); ++j)
+        {
+            queryAnamn.setLong(index,id_profPac);
+            ++index;
+
+            queryAnamn.setLong(index,(j+1));
+            ++index;
+
+            queryAnamn.setString(index, telaCadAnamn.getRespostas()[j]);
+            ++index;
+        }
+        
+        /*
+        * Log Queries
+        */
+        System.out.println(queryPaciente);
+        System.out.println(queryProfPac);
+        System.out.println(queryAnamn); 
+        
+        if( queryAnamn.executeUpdate() <= 0)
+        {
+            return -2;
+        }
+        return 0;
     }
     
     /**
@@ -301,16 +398,22 @@ public class TelaCadastrarPaciente extends javax.swing.JInternalFrame {
         this.popularMembros();
         try {
             ret = this.cadastrar();
+            connect.commit();
         } catch (SQLException ex) {
+            try {
+                connect.rollback();
+            } catch (SQLException ex1) {
+                Logger.getLogger(TelaCadastrarPaciente.class.getName()).log(Level.SEVERE, null, ex1);
+            }
             Logger.getLogger(TelaCadastrarPaciente.class.getName()).log(Level.SEVERE, null, ex);
-            ret = 1;
+            ret = -2;
         }
         if (ret == 0 )
         {
             JOptionPane.showMessageDialog(null, "Paciente Inserido");
             telaCadAnamn.dispose();
         }
-        else if (ret == 1)
+        else if (ret == -2)
         {
             JOptionPane.showMessageDialog(null, "Problema ao inserir Paciente");
         }
