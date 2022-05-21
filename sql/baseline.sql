@@ -23,14 +23,14 @@ Create Table Paciente(
 	id_paciente INT(3) AUTO_INCREMENT PRIMARY KEY,
 	Nome Varchar(50) not null,           
 	CPF int(11) not null UNIQUE ,
-	Nascimento int(10) NOT NULL,          -- tipo DATE
+	Nascimento VARCHAR(10) NOT NULL,          -- tipo DATE
 	Escolaridade Varchar(20) NOT NULL,    -- Criar 'check constraint' que restrinja a apenas algumas opções
 	Estado_Civil Varchar(20) NOT NULL,    -- Criar 'check constraint' que restrinja a apenas duas opções
 	Filhos INT(1) NOT NULL
 );
 
 Create Table Profissional_Paciente(
-	id_profissional_paciente int(2) PRIMARY KEY,
+	id_profissional_paciente int(2) PRIMARY KEY AUTO_INCREMENT,
 	id_usuario INT(2),
 	id_paciente int(3),
 	FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario),
@@ -39,16 +39,17 @@ Create Table Profissional_Paciente(
 
 
 Create Table Anamnese(
-	id_profissional_paciente int(2) PRIMARY KEY,
+	id_profissional_paciente int(2),
 	id_pergunta int(2),
 	resposta Varchar(400) not null,
+	primary key(id_pergunta,id_profissional_paciente),
 	FOREIGN KEY (id_pergunta) REFERENCES Perguntas(id_pergunta),
 	FOREIGN KEY (id_profissional_paciente) REFERENCES Profissional_Paciente(id_profissional_paciente)
 );
-	
+
 
 Create Table Agendamento(
-	id_agendamento int(2) PRIMARY KEY,
+	id_agendamento int(2) PRIMARY KEY AUTO_INCREMENT,
 	id_profissional_paciente int(2),
 	FOREIGN KEY (id_profissional_paciente) REFERENCES Profissional_Paciente(id_profissional_paciente),
 	Dia int(2),
@@ -79,7 +80,7 @@ insert into clinica_psico_production.usuario -- (nome,login,senha,cep,Complement
 insert 
 	into 
 		perguntas(Pergunta_Anamnese) 
-	value
+	values
 		("O que traz você aqui?"),
 		("Como ocorreu a busca pelo processo?"),
 		("Como se sente em relação à queixa?"),
