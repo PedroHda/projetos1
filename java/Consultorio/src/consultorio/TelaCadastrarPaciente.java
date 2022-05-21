@@ -7,6 +7,7 @@ package consultorio;
 
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
+import com.mysql.jdbc.Statement;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.ResultSet;
@@ -91,27 +92,35 @@ public class TelaCadastrarPaciente extends javax.swing.JInternalFrame {
         long id_profPac = 0;
         
         String queryStringPaciente = " "+
-                "insert into paciente values(\n"+
+                "insert into paciente\n"+
+                "(\n"+
                     "NOME,\n" +
                     "CPF,\n" +
                     "Nascimento, \n" +
                     "Escolaridade, \n" +
                     "Estado_Civil, \n" +
-                    "Filhos )\n"+
+                    "Filhos \n"+
+                ")\n"+
+                "values\n"+   
                 "(\n"+
                     "?,\n"            + // Nome
                     "?,\n"            + // CPF
                     "?,\n"            + // Nascimento
                     "?,\n"            + // Escolaridade
                     "?,\n"            + // Estado Civil
-                    "?,\n"            + // Filhos
+                    "?\n"            + // Filhos
                 ")";
         
         String queryStringProfPac = " "+
-                "insert into Profissional_paciente values\n" +
+                "insert into Profissional_paciente\n"+
+                "(\n"+
+                    "id_usuario,\n"+
+                    "id_paciente\n"+
+                ")\n"+
+                "values\n" +
                 "(\n"+
                     "?,\n"            + // id Usuario
-                    "?,\n"            + // id Paciente
+                    "?\n"            + // id Paciente
                 ")";        
         
         String queryStringAnamn = " "+
@@ -135,15 +144,14 @@ public class TelaCadastrarPaciente extends javax.swing.JInternalFrame {
         /*
         * Prepare Profissional_Paciente query
         */
-        PreparedStatement queryPaciente = (PreparedStatement) connect.prepareStatement(queryStringPaciente);
+        PreparedStatement queryPaciente = (PreparedStatement) connect.prepareStatement(queryStringPaciente, Statement.RETURN_GENERATED_KEYS);
         queryPaciente.setString(1, this.getNome());
         queryPaciente.setLong(2, this.getCpf());
         queryPaciente.setString(3, this.getNascimento());
         queryPaciente.setString(4, this.getEscolaridade());
         queryPaciente.setString(5, this.getEstadoCivil());
         queryPaciente.setLong(6, this.getFilhos());
-        queryPaciente.setString(7, this.getLoginProf());
-        
+        System.out.println(queryPaciente);
         /*
         * Prepare Profissional_Paciente query
         */
@@ -157,7 +165,7 @@ public class TelaCadastrarPaciente extends javax.swing.JInternalFrame {
                                     + " ";
         
         
-        PreparedStatement querySearch = (PreparedStatement) connect.prepareStatement(queryStringSearch);
+        PreparedStatement querySearch = (PreparedStatement) connect.prepareStatement(queryStringSearch, Statement.RETURN_GENERATED_KEYS);
         querySearch.setString(1, this.getLoginProf());
         
         System.out.println(querySearch);
@@ -177,17 +185,17 @@ public class TelaCadastrarPaciente extends javax.swing.JInternalFrame {
         ResultSet genPacienteKeys = queryPaciente.getGeneratedKeys();
         if(genPacienteKeys.next())
         {
-            id_paciente = getInt(1);
+            id_paciente = genPacienteKeys.getLong(1);
         }
         
         
         /*
         * Prepare Query Profissional Paciente
         */        
-        PreparedStatement queryProfPac = (PreparedStatement) connect.prepareStatement(queryStringProfPac);
+        PreparedStatement queryProfPac = (PreparedStatement) connect.prepareStatement(queryStringProfPac, Statement.RETURN_GENERATED_KEYS);
         queryProfPac.setLong(1, id_prof);
         queryProfPac.setLong(2, id_paciente);
-
+        System.out.println(queryProfPac);
         /*
         * Execute query Profissional_Paciente
         */
@@ -199,7 +207,7 @@ public class TelaCadastrarPaciente extends javax.swing.JInternalFrame {
         
         if(genProfPacKeys.next())
         {
-            id_profPac = Long.parseLong(resultado.getString("id_profissional_paciente"));
+            id_profPac = genProfPacKeys.getLong(1);
         }
 
         /*    queryProfPac.setLong(1, id_prof);
@@ -230,13 +238,7 @@ public class TelaCadastrarPaciente extends javax.swing.JInternalFrame {
             ++index;
         }
         
-        /*
-        * Log Queries
-        */
-        System.out.println(queryPaciente);
-        System.out.println(queryProfPac);
         System.out.println(queryAnamn); 
-        
         if( queryAnamn.executeUpdate() <= 0)
         {
             return -2;
@@ -398,7 +400,8 @@ public class TelaCadastrarPaciente extends javax.swing.JInternalFrame {
         this.popularMembros();
         try {
             ret = this.cadastrar();
-            connect.commit();
+            // Tirar autocommit
+            //connect.commit();
         } catch (SQLException ex) {
             try {
                 connect.rollback();
