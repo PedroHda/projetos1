@@ -49,6 +49,8 @@ public class TelaCadastrarPaciente extends javax.swing.JInternalFrame {
             public void internalFrameClosing(InternalFrameEvent e) 
             {
                 System.out.println("Listener After Closing Tela Cadastrar Anamnese");
+                // pedro Tela mantém informações da classe de Anamnese, mesmo depois de fechar tela de cadastro
+                // pedro Ao clicar em fechar tela da anamnese, ele fecha o projeto todo
                 //telaCadAnamn = null;
                 //telaCadAnamn.dispose();
             }
@@ -209,17 +211,6 @@ public class TelaCadastrarPaciente extends javax.swing.JInternalFrame {
         {
             id_profPac = genProfPacKeys.getLong(1);
         }
-
-        /*    queryProfPac.setLong(1, id_prof);
-            queryProfPac.setLong(2, id_paciente);            
-            
-            if (queryProfPac.executeUpdate() <= 0)
-            {
-                return -2;
-            }
-                    /*
-            * Prepare Anamnese query
-            */
 
         /*
         * Prepare query Anamnese
